@@ -18,17 +18,16 @@ class SuggestedWordsResults:
 
 class WorldSolverMultiList:
 
-    def __init__(self, word_list_file_paths: list = [], word_length : int = 5, exclude_plurals:bool=True, word_socres:dict={}, order_words_by_score_desc:bool=False, word_symbol_combinations:dict={}):
+    def __init__(self, word_list_file_paths: list = [], word_length : int = 5, word_socres:dict={}, order_words_by_score_desc:bool=False, word_symbol_combinations:dict={}):
         self.word_lists = []
         self.word_list_file_paths = word_list_file_paths
         self.word_length = word_length
-        self.exclude_plurals = exclude_plurals
         self.word_socres = word_socres
         self.max_try_indexes_for_lists = []
         self.order_words_by_score_desc = order_words_by_score_desc
         self.word_symbol_combinations = word_symbol_combinations
         for file_path in self.word_list_file_paths:
-            word_list = Utility.load_word_list(file_path, self.word_length, self.exclude_plurals)
+            word_list = Utility.load_word_list(file_path, self.word_length)
             self.word_lists.append(word_list)
         self.reset()
         pass
@@ -38,7 +37,7 @@ class WorldSolverMultiList:
         self.tries = []
         self.solvers = []
         for word_list in self.word_lists:
-            solver = WordleSolver(None, self.word_length, self.exclude_plurals)
+            solver = WordleSolver(None, self.word_length)
             solver.word_list = word_list
             solver.word_socres = self.word_socres
             solver.order_words_by_descending_socre = self.order_words_by_score_desc
@@ -95,7 +94,7 @@ class WorldSolverMultiList:
 
 class WordleSolver():
 
-    def __init__(self, word_list_file_path: str = None, word_length : int = 5, exclude_plurals:bool=True):
+    def __init__(self, word_list_file_path: str = None, word_length : int = 5):
         self.permitted_input_symbols = "+?_"
         self.word_list = []
         self.word_socres = {}
@@ -104,10 +103,9 @@ class WordleSolver():
         self.effective_word_list = []
         self.word_list_file_path = word_list_file_path
         self.word_length = word_length
-        self.exclude_plurals = exclude_plurals
         self.order_words_by_descending_socre = False
         if self.word_list_file_path is not None:
-            self.word_list = Utility.load_word_list(self.word_list_file_path, self.word_length, self.exclude_plurals)
+            self.word_list = Utility.load_word_list(self.word_list_file_path, self.word_length)
         self.reset()
 
     def reset(self):
@@ -308,18 +306,17 @@ if __name__ == "__main__":
     argParser = argparse.ArgumentParser()
 
     argParser.add_argument("--length", help="The length (number of letters) of the hidden word", required=False, default=5, type=int)
-    argParser.add_argument("--plurals", help="Do not exclude plurals when loading from the word list", required=False, default=False, type=bool)
 
     args = argParser.parse_args()
 
-    word_list_file_paths = ["english_words_opener.txt", "english_words_full.txt"]
+    word_list_file_paths = ["sunderland_players.txt", "sunderland_players.txt"]
 
-    solver_multi = WorldSolverMultiList(word_list_file_paths, args.length, not args.plurals)
+    solver_multi = WorldSolverMultiList(word_list_file_paths, args.length)
 
     solver_multi.max_try_indexes_for_lists = [2, sys.maxsize]
 
-    print("The WORDLE Solver CLI")
-    print(f"(Word length: {args.length}; Plurals: {'Yes' if args.plurals else 'No'})")
+    print("The Mackem DLE Solver CLI")
+    print(f"(Word length: {args.length};)")
     print("Press CTRL+C to exit\n")
     print("Meanings of symbols:")
     print(" +\tletter in the word and in the right spot (green box)")
@@ -333,7 +330,7 @@ if __name__ == "__main__":
     first_run = True
 
     while True:
-        print("Please enter you last try as word:symbols")
+        print("Please enter your last try as word:symbols")
         user_input = input().lower()
 
         reset = False
@@ -387,4 +384,4 @@ if __name__ == "__main__":
             for suggestion in suggested_words.words[:10]:
                 print(f"\t{suggestion}")
         else:
-            print("Sorry, no other possible words.  Please check the result symbols you entered.")
+            print("Sorry, no other possible players.  Please check the result symbols you entered.")
