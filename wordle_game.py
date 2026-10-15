@@ -71,15 +71,19 @@ if __name__ == "__main__":
     argParser.add_argument("--length", help="The length (number of letters) of the hidden word", required=False, default=5, type=int)
     argParser.add_argument("--plurals", help="Do not exclude plurals when loading from the word list", required=False, default=False, type=bool)
     argParser.add_argument("--maxguess", help="The number of guesses allowed", required=False, default=6, type=int)
+    argParser.add_argument("--type", help="Type of game", required=False, default=0, type=int)
 
     args = argParser.parse_args()
+    
+    myfiles = ["english_words_10k_mit.txt","sunderland_players.txt"]
+    mytype = ["WORDLE","MACKEM DLE"]
 
-    wordle = WordleGame("english_words_10k_mit.txt", args.length, not args.plurals)
+    wordle = WordleGame(myfiles[args.type], args.length, not args.plurals)
 
     correct_guess_output = "+" * wordle.word_length
     max_guess = args.maxguess
 
-    print("The WORDLE game CLI")
+    print(f"The mytype[args.type] game CLI")
     print(f"(Word length: {wordle.word_length}; Plurals: {'Yes' if not wordle.exclude_plurals else 'No'}; Max guesses: {max_guess})")
     print("Press CTRL+C to exit\n")
     print("Meanings of symbols:")
