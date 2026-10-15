@@ -322,7 +322,7 @@ if __name__ == "__main__":
 
     solver_multi.max_try_indexes_for_lists = [2, sys.maxsize]
 
-    print(f"The (mytype[args.type]) Solver CLI")
+    print(f"The {mytype[args.type]} Solver CLI")
     print(f"(Word length: {args.length}; Plurals: {'Yes' if args.plurals else 'No'})")
     print("Press CTRL+C to exit\n")
     print("Meanings of symbols:")
@@ -391,4 +391,4 @@ if __name__ == "__main__":
             for suggestion in suggested_words.words[:10]:
                 print(f"\t{suggestion}")
         else:
-            print(f"Sorry, no other possible (mytries[args.type]).  Please check the result symbols you entered.")
+            print(f"Sorry, no other possible {mytries[args.type]}.  Please check the result symbols you entered.")
