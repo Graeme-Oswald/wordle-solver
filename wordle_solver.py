@@ -309,16 +309,20 @@ if __name__ == "__main__":
 
     argParser.add_argument("--length", help="The length (number of letters) of the hidden word", required=False, default=5, type=int)
     argParser.add_argument("--plurals", help="Do not exclude plurals when loading from the word list", required=False, default=False, type=bool)
+    argParser.add_argument("--type", help="Type of game", required=False, default=0, type=int)
 
     args = argParser.parse_args()
 
-    word_list_file_paths = ["english_words_opener.txt", "english_words_full.txt"]
+    word_list_file_paths = [["english_words_opener.txt", "english_words_full.txt"],
+                            ["sunderland_players.txt"]]
+    mytype = ["WORDLE","MACKEM DLE"]
+    mytries = ["words", "players"]
 
-    solver_multi = WorldSolverMultiList(word_list_file_paths, args.length, not args.plurals)
+    solver_multi = WorldSolverMultiList(word_list_file_paths[args.type], args.length, not args.plurals)
 
     solver_multi.max_try_indexes_for_lists = [2, sys.maxsize]
 
-    print("The WORDLE Solver CLI")
+    print(f"The (mytype[args.type]) Solver CLI")
     print(f"(Word length: {args.length}; Plurals: {'Yes' if args.plurals else 'No'})")
     print("Press CTRL+C to exit\n")
     print("Meanings of symbols:")
@@ -333,7 +337,7 @@ if __name__ == "__main__":
     first_run = True
 
     while True:
-        print("Please enter you last try as word:symbols")
+        print("Please enter your last try as word:symbols")
         user_input = input().lower()
 
         reset = False
@@ -387,4 +391,4 @@ if __name__ == "__main__":
             for suggestion in suggested_words.words[:10]:
                 print(f"\t{suggestion}")
         else:
-            print("Sorry, no other possible words.  Please check the result symbols you entered.")
+            print(f"Sorry, no other possible (mytries[args.type]).  Please check the result symbols you entered.")
