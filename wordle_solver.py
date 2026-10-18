@@ -56,15 +56,15 @@ class WorldSolverMultiList:
     def get_pattern_parameter_conflicts(self):
         if len(self.solvers) > 0:
             # conflict check results should be the identical across solvers.
-            # it is alright to return conflicts detected from the first sovler only
+            # it is alright to return conflicts detected from the first solver only
             return self.solvers[0].get_pattern_parameter_conflicts()
         raise Exception("No solvers")
 
 
-    def update_pattern_paramters(self):
+    def update_pattern_parameters(self):
         for solver in self.solvers:
             solver.tries = self.tries
-            solver.update_pattern_paramters()
+            solver.update_pattern_parameters()
         pass
 
     
@@ -139,7 +139,7 @@ class WordleSolver():
         return conflicts
     
 
-    def update_pattern_paramters(self):
+    def update_pattern_parameters(self):
         self.reset_pattern_parameters()
         possible_word_lists = []
         for (word, symbol_pattern) in self.tries:
@@ -282,7 +282,7 @@ class WordleSolver():
         suggested_letters = list([letter for (letter, prob) in suggested_letters_with_prob])
         for i in range(unknown_letter_count, 0, -1):
             self.high_prob_letters = suggested_letters[:i]
-            self.update_pattern_paramters()
+            self.update_pattern_parameters()
             suggested_words = self.get_possible_words()
             self.high_prob_letters = ""
             if len(suggested_words) > 0:
@@ -300,7 +300,7 @@ class WordleSolver():
         if not all([symbol in self.permitted_input_symbols for symbol in result_symbols]):
             raise Exception("Symbols contains an invalid symbol")
         self.tries.append((word, result_symbols))
-        self.update_pattern_paramters()
+        self.update_pattern_parameters()
 
 
 if __name__ == "__main__":
@@ -314,7 +314,7 @@ if __name__ == "__main__":
     args = argParser.parse_args()
 
     word_list_file_paths = [["english_words_opener.txt", "english_words_full.txt"],
-                            ["sunderland_players.txt"]]
+                            ["sunderland_players.txt","sunderland_players.txt"]]
     mytype = ["WORDLE","MACKEM DLE"]
     mytries = ["words", "players"]
 
