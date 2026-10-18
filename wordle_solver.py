@@ -18,12 +18,12 @@ class SuggestedWordsResults:
 
 class WorldSolverMultiList:
 
-    def __init__(self, word_list_file_paths: list = [], word_length : int = 5, exclude_plurals:bool=True, word_socres:dict={}, order_words_by_score_desc:bool=False, word_symbol_combinations:dict={}):
+    def __init__(self, word_list_file_paths: list = [], word_length : int = 5, exclude_plurals:bool=True, word_scores:dict={}, order_words_by_score_desc:bool=False, word_symbol_combinations:dict={}):
         self.word_lists = []
         self.word_list_file_paths = word_list_file_paths
         self.word_length = word_length
         self.exclude_plurals = exclude_plurals
-        self.word_socres = word_socres
+        self.word_scores = word_scores
         self.max_try_indexes_for_lists = []
         self.order_words_by_score_desc = order_words_by_score_desc
         self.word_symbol_combinations = word_symbol_combinations
@@ -40,8 +40,8 @@ class WorldSolverMultiList:
         for word_list in self.word_lists:
             solver = WordleSolver(None, self.word_length, self.exclude_plurals)
             solver.word_list = word_list
-            solver.word_socres = self.word_socres
-            solver.order_words_by_descending_socre = self.order_words_by_score_desc
+            solver.word_scores = self.word_scores
+            solver.order_words_by_descending_score = self.order_words_by_score_desc
             solver.word_symbol_combinations = self.word_symbol_combinations
             self.solvers.append(solver)
         pass
@@ -98,14 +98,14 @@ class WordleSolver():
     def __init__(self, word_list_file_path: str = None, word_length : int = 5, exclude_plurals:bool=True):
         self.permitted_input_symbols = "+?_"
         self.word_list = []
-        self.word_socres = {}
+        self.word_scores = {}
         self.word_symbol_combinations = {}
         self.symbol_anyletter = "*"
         self.effective_word_list = []
         self.word_list_file_path = word_list_file_path
         self.word_length = word_length
         self.exclude_plurals = exclude_plurals
-        self.order_words_by_descending_socre = False
+        self.order_words_by_descending_score = False
         if self.word_list_file_path is not None:
             self.word_list = Utility.load_word_list(self.word_list_file_path, self.word_length, self.exclude_plurals)
         self.reset()
@@ -227,11 +227,11 @@ class WordleSolver():
 
     def sort_words(self, words):
         sorted_words = []
-        if len(self.word_socres) > 0:
-            if all([word in self.word_socres for word in words]):
-                words_with_socres = [(word, self.word_socres[word]) for word in words]
-                words_with_socres.sort(key=lambda element: element[1], reverse=self.order_words_by_descending_socre)
-                sorted_words = [word for (word, _) in words_with_socres]
+        if len(self.word_scores) > 0:
+            if all([word in self.word_scores for word in words]):
+                words_with_scores = [(word, self.word_scores[word]) for word in words]
+                words_with_scores.sort(key=lambda element: element[1], reverse=self.order_words_by_descending_score)
+                sorted_words = [word for (word, _) in words_with_scores]
         if len(sorted_words) <= 0:
             sorted_words = [word_with_prob[0] for word_with_prob in self.sort_words_with_letter_positional_prob(words)]
         return sorted_words
