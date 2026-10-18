@@ -8,8 +8,8 @@ class Utility():
             word_list = [word for word in word_list if (word[-1] != "s" or word.endswith("ss"))]
         return word_list
 
-    def load_word_socres_dict(word_socre_file_path: str):
-        word_score_lines = [line.split("\t") for line in open(word_socre_file_path, "r").readlines()]
+    def load_word_scores_dict(word_score_file_path: str):
+        word_score_lines = [line.split("\t") for line in open(word_score_file_path, "r").readlines()]
         word_score_dict = {}
         for (word, score) in word_score_lines:
             word_score_dict[word] = float(score.replace("\r", "").replace("\n", ""))

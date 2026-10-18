@@ -40,7 +40,7 @@ def handle_tries(ui_tries:list, word_length: int, exclude_plurals: bool=True, sh
             write_log(json.dumps({"error":"invalid_lengths", "request": ui_tries}))
             return make_response(jsonify(message="Invalid length for word(s) or symbol(s)"), 400)
         solver_multi.tries = tries
-        solver_multi.update_pattern_paramters()
+        solver_multi.update_pattern_parameters()
         suggested_words_results = solver_multi.get_suggested_words()
         suggested_words = suggested_words_results.words[:SolverAPIParameters.max_suggested_words]
         if shuffle_suggested_words:

@@ -18,12 +18,12 @@ class SuggestedWordsResults:
 
 class WorldSolverMultiList:
 
-    def __init__(self, word_list_file_paths: list = [], word_length : int = 5, exclude_plurals:bool=True, word_socres:dict={}, order_words_by_score_desc:bool=False, word_symbol_combinations:dict={}):
+    def __init__(self, word_list_file_paths: list = [], word_length : int = 5, exclude_plurals:bool=True, word_scores:dict={}, order_words_by_score_desc:bool=False, word_symbol_combinations:dict={}):
         self.word_lists = []
         self.word_list_file_paths = word_list_file_paths
         self.word_length = word_length
         self.exclude_plurals = exclude_plurals
-        self.word_socres = word_socres
+        self.word_scores = word_scores
         self.max_try_indexes_for_lists = []
         self.order_words_by_score_desc = order_words_by_score_desc
         self.word_symbol_combinations = word_symbol_combinations
@@ -40,8 +40,8 @@ class WorldSolverMultiList:
         for word_list in self.word_lists:
             solver = WordleSolver(None, self.word_length, self.exclude_plurals)
             solver.word_list = word_list
-            solver.word_socres = self.word_socres
-            solver.order_words_by_descending_socre = self.order_words_by_score_desc
+            solver.word_scores = self.word_scores
+            solver.order_words_by_descending_score = self.order_words_by_score_desc
             solver.word_symbol_combinations = self.word_symbol_combinations
             self.solvers.append(solver)
         pass
@@ -56,15 +56,15 @@ class WorldSolverMultiList:
     def get_pattern_parameter_conflicts(self):
         if len(self.solvers) > 0:
             # conflict check results should be the identical across solvers.
-            # it is alright to return conflicts detected from the first sovler only
+            # it is alright to return conflicts detected from the first solver only
             return self.solvers[0].get_pattern_parameter_conflicts()
         raise Exception("No solvers")
 
 
-    def update_pattern_paramters(self):
+    def update_pattern_parameters(self):
         for solver in self.solvers:
             solver.tries = self.tries
-            solver.update_pattern_paramters()
+            solver.update_pattern_parameters()
         pass
 
     
@@ -98,14 +98,14 @@ class WordleSolver():
     def __init__(self, word_list_file_path: str = None, word_length : int = 5, exclude_plurals:bool=True):
         self.permitted_input_symbols = "+?_"
         self.word_list = []
-        self.word_socres = {}
+        self.word_scores = {}
         self.word_symbol_combinations = {}
         self.symbol_anyletter = "*"
         self.effective_word_list = []
         self.word_list_file_path = word_list_file_path
         self.word_length = word_length
         self.exclude_plurals = exclude_plurals
-        self.order_words_by_descending_socre = False
+        self.order_words_by_descending_score = False
         if self.word_list_file_path is not None:
             self.word_list = Utility.load_word_list(self.word_list_file_path, self.word_length, self.exclude_plurals)
         self.reset()
@@ -139,7 +139,7 @@ class WordleSolver():
         return conflicts
     
 
-    def update_pattern_paramters(self):
+    def update_pattern_parameters(self):
         self.reset_pattern_parameters()
         possible_word_lists = []
         for (word, symbol_pattern) in self.tries:
@@ -227,11 +227,11 @@ class WordleSolver():
 
     def sort_words(self, words):
         sorted_words = []
-        if len(self.word_socres) > 0:
-            if all([word in self.word_socres for word in words]):
-                words_with_socres = [(word, self.word_socres[word]) for word in words]
-                words_with_socres.sort(key=lambda element: element[1], reverse=self.order_words_by_descending_socre)
-                sorted_words = [word for (word, _) in words_with_socres]
+        if len(self.word_scores) > 0:
+            if all([word in self.word_scores for word in words]):
+                words_with_scores = [(word, self.word_scores[word]) for word in words]
+                words_with_scores.sort(key=lambda element: element[1], reverse=self.order_words_by_descending_score)
+                sorted_words = [word for (word, _) in words_with_scores]
         if len(sorted_words) <= 0:
             sorted_words = [word_with_prob[0] for word_with_prob in self.sort_words_with_letter_positional_prob(words)]
         return sorted_words
@@ -282,7 +282,7 @@ class WordleSolver():
         suggested_letters = list([letter for (letter, prob) in suggested_letters_with_prob])
         for i in range(unknown_letter_count, 0, -1):
             self.high_prob_letters = suggested_letters[:i]
-            self.update_pattern_paramters()
+            self.update_pattern_parameters()
             suggested_words = self.get_possible_words()
             self.high_prob_letters = ""
             if len(suggested_words) > 0:
@@ -300,7 +300,7 @@ class WordleSolver():
         if not all([symbol in self.permitted_input_symbols for symbol in result_symbols]):
             raise Exception("Symbols contains an invalid symbol")
         self.tries.append((word, result_symbols))
-        self.update_pattern_paramters()
+        self.update_pattern_parameters()
 
 
 if __name__ == "__main__":
@@ -314,7 +314,7 @@ if __name__ == "__main__":
     args = argParser.parse_args()
 
     word_list_file_paths = [["english_words_opener.txt", "english_words_full.txt"],
-                            ["sunderland_players.txt"]]
+                            ["sunderland_players.txt","sunderland_players.txt"]]
     mytype = ["WORDLE","MACKEM DLE"]
     mytries = ["words", "players"]
 
